@@ -1,0 +1,32 @@
+@QuickMock_HostAddress = http://localhost:5209
+
+GET {{QuickMock_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+# POST request to create a new item
+POST https://localhost:5001/api/items
+Content-Type: application/json
+
+{
+  "name": "New Item",
+  "price": 100
+}
+
+###
+
+# PUT request to update an existing item
+PUT https://localhost:5001/api/items/1
+Content-Type: application/json
+
+{
+  "name": "Updated Item",
+  "price": 200
+}
+
+###
+
+# DELETE request to remove an item
+DELETE https://localhost:5001/api/items/1
+Authorization: Bearer {{token}}

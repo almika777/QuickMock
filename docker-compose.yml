@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  bonds.app.api:
+    image: almirok/bonds:latest
+    ports:
+      - "5000:80"
+      - "80:5000"
+      - "8443:8443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_HTTPS_PORTS=8443
+      - ConnectionStrings__Bonds=Server=postgres;Port=5432;User Id=${POSTGRES_USER};Password=${POSTGRES_PW};Database=${POSTGRES_DB};
+    volumes:
+      - ~/etc/ssl/telegram-bot:/app/certs:ro 
+      - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - postgres
+    restart: always
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PW}
+      - POSTGRES_DB=${POSTGRES_DB} #optional (specify default database instead of $POSTGRES_DB)
+    ports:
+      - "5432:5432"
+    restart: always
