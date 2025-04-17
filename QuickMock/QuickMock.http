@@ -1,0 +1,6 @@
+@QuickMock_HostAddress = http://localhost:5209
+
+GET {{QuickMock_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
