@@ -1,20 +1,4 @@
 services:
-  quickmock.api:
-    image: ${DOCKER_REGISTRY-}quickmock
-    build: .
-    ports:
-      - "80:8080"
-      - "443:8081"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__quickmock=Server=postgres;Port=5432;User Id=${POSTGRES_USER};Password=${POSTGRES_PW};Database=${POSTGRES_DB};
-    volumes:
-      - ~/.aspnet/https:/https:ro
-    depends_on:
-      - postgres
-    restart: always
-    networks:
-      - quickmock-network
 
   postgres:
     container_name: quickmock_postgres
@@ -31,11 +15,12 @@ services:
 
   pgadmin:
     container_name: pgadmin4_container
-    image: dpage/pgadmin4:7
+    image: dpage/pgadmin4:9
     restart: always
     environment:
         PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
         PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+        GUNICORN_CMD_ARGS: "--limit-request-field_size 16384"
     ports:
         - "5050:80"
     networks:
