@@ -28,6 +28,7 @@ namespace QuickMock
             });
 
             builder.Services.AddDataProvider(builder.Configuration);
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -37,7 +38,6 @@ namespace QuickMock
             }
             
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
             app.UseRouting();
 
@@ -50,6 +50,7 @@ namespace QuickMock
             {
                 x.SwaggerEndpoint("v1/swagger.json", "QuickMock API V1");
             });
+            
             app.Run();
         }
     }

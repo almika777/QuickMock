@@ -3,7 +3,7 @@
 namespace DataProvider.Migrations._2025._04
 {
     [Migration(202504191340)]
-    public class _202504191340_initialize : Migration
+    public class _202504191340_users : Migration
     {
         private string TableName => "Users";
         public override void Up()

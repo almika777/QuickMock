@@ -22,7 +22,14 @@ namespace DataProvider.Extensions
 
             using var scope = provider.CreateScope();
             var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-            runner.MigrateUp();
+            try
+            {
+                runner.MigrateUp();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
             return services;
         }
     }
