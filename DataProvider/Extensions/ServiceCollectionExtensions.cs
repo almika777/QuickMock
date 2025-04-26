@@ -1,5 +1,6 @@
-﻿using DataProvider.Migrations._2025._04;
+﻿using DataProvider.Migrations;
 using FluentMigrator.Runner;
+using FluentMigrator.Runner.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +17,7 @@ namespace DataProvider.Extensions
                 .ConfigureRunner(rb => rb
                     .AddPostgres()
                     .WithGlobalConnectionString(connectionString)
-                    .ScanIn(typeof(_202504191340_initialize).Assembly).For.Migrations())
+                    .ScanIn(typeof(_1_all_scheme).Assembly).For.Migrations())
                 .AddLogging(lb => lb.AddFluentMigratorConsole())
                 .BuildServiceProvider();
 
@@ -28,8 +29,9 @@ namespace DataProvider.Extensions
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                throw new InvalidMigrationException(null, e.Message);
             }
+
             return services;
         }
     }
