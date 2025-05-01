@@ -3,14 +3,13 @@
 namespace DataProvider.Migrations
 {
     [Migration(1)]
-    public class _1_all_scheme : Migration
+    public class _1_all_scheme : BaseMigration
     {
-        public override void Up()
+        protected override void Migration()
         {
             Create.Table("Users")
                 .WithColumn("Id").AsGuid().PrimaryKey()
                 .WithColumn("Email").AsString(256).NotNullable()
-                .WithColumn("Username").AsString(128).NotNullable()
                 .WithColumn("Password").AsString(128).NotNullable()
                 .WithColumn("RefreshToken").AsString(512).NotNullable()
                 .WithColumn("IsActive").AsBoolean().NotNullable().WithDefaultValue(true)
@@ -65,11 +64,6 @@ namespace DataProvider.Migrations
                 .WithColumn("Created").AsDateTime().NotNullable()
                 .WithColumn("Modified").AsDateTime().Nullable();
 
-        }
-
-        public override void Down()
-        {
-            
         }
     }
 }

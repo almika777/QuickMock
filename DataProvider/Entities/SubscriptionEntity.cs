@@ -2,29 +2,23 @@
 
 namespace DataProvider.Entities
 {
-    [Table(Name = "Users")]
-    public class UserEntity
+    [Table(Name = "Subscriptions")]
+    public class SubscriptionEntity
     {
         [Column]
         public Guid Id { get; set; }
         
         [Column]
-        public string Email { get; set; }
+        public Guid UserId { get; set; }
         
         [Column]
-        public string Password { get; set; }
-        
-        [Column]
-        public string RefreshToken { get; set; }
+        public Guid TariffId { get; set; }
         
         [Column]
         public bool IsActive { get; set; }
         
         [Column]
-        public bool IsVerified { get; set; }
-        
-        [Column]
-        public string Comment { get; set; }
+        public DateTime Deadline { get; set; }        
         
         [Column]
         public DateTime Created { get; set; }

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DataProvider.Tests.Mappings
 {
-    public class UserMappingTests : TestcontainersBase
+    public class UserEmailVerifyMappingTests : TestcontainersBase
     {
         private AppDbContext _db;
 
@@ -25,22 +25,20 @@ namespace DataProvider.Tests.Mappings
         [Test]
         public async Task GetByIdTests()
         {
-            var user = new UserRequest
+            var entity = new UserEmailVerifyEntity
             {
                 Id = Guid.CreateVersion7(),
-                Email = "",
-                Password = "null",
-                RefreshToken = "null",
-                IsActive = true,
-                Created = DateTime.UtcNow,
+                VerifyCode = "123456",
+                Attempt = 0,
+                Created = DateTime.UtcNow
             };
             
-            await _db.InsertAsync(user.Adapt<UserEntity>());
+            await _db.InsertAsync(entity);
 
-            var res = await _db.Users.FirstAsync(x => x.Id == user.Id);
+            var res = await _db.UserEmailVerify.FirstAsync(x => x.Id == entity.Id);
 
             Assert.That(res, Is.Not.Null);
-            Assert.That(res.Id, Is.EqualTo(user.Id));
+            Assert.That(res.Id, Is.EqualTo(entity.Id));
         }
     }
 }
