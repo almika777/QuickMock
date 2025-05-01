@@ -13,5 +13,8 @@ namespace DataProvider
         }
 
         public ITable<UserEntity> Users => this.GetTable<UserEntity>();
+        public ITable<UserEmailVerifyEntity> UserEmailVerify => this.GetTable<UserEmailVerifyEntity>();
+        public ITable<SubscriptionEntity> Subscriptions => this.GetTable<SubscriptionEntity>();
+        public ITable<TariffEntity> Tariffs => this.GetTable<TariffEntity>();
     }
 }

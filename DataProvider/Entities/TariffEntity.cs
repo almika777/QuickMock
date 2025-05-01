@@ -2,29 +2,29 @@
 
 namespace DataProvider.Entities
 {
-    [Table(Name = "Users")]
-    public class UserEntity
+    [Table(Name = "Tariffs")]
+    public class TariffEntity
     {
         [Column]
         public Guid Id { get; set; }
         
         [Column]
-        public string Email { get; set; }
+        public int Price { get; set; }
         
         [Column]
-        public string Password { get; set; }
+        public int RequestsPerMinute { get; set; }
         
         [Column]
-        public string RefreshToken { get; set; }
+        public int SimpleRequestsCount { get; set; }
+        
+        [Column]
+        public int BigRequestsCount { get; set; }        
         
         [Column]
         public bool IsActive { get; set; }
         
         [Column]
-        public bool IsVerified { get; set; }
-        
-        [Column]
-        public string Comment { get; set; }
+        public TimeSpan Duration { get; set; }        
         
         [Column]
         public DateTime Created { get; set; }

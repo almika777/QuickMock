@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using System.Text.Json;
+using Core.Extensions;
 using DataProvider.Extensions;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -28,6 +29,7 @@ namespace QuickMock
             });
 
             builder.Services.AddDataProvider(builder.Configuration);
+            builder.Services.AddCore(builder.Configuration);
 
             var app = builder.Build();
 
