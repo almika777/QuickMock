@@ -1,13 +1,6 @@
-
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
-using System.Text.Json;
+using Common.Options;
 using Core.Extensions;
-using DataProvider.Extensions;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace QuickMock
 {
@@ -28,9 +21,8 @@ namespace QuickMock
                 x.SwaggerDoc("v1", new OpenApiInfo { Title = "QuickMock API", Version = "v1" });
             });
 
-            builder.Services.AddDataProvider(builder.Configuration);
             builder.Services.AddCore(builder.Configuration);
-
+            builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(nameof(AppOptions)));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -38,21 +30,15 @@ namespace QuickMock
             {
                 app.MapOpenApi();
             }
-            
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
-
             app.MapControllers();
             app.MapSwagger();
-            app.UseSwaggerUI(x =>
-            {
-                x.SwaggerEndpoint("v1/swagger.json", "QuickMock API V1");
-            });
-            
+            app.UseSwaggerUI(x => { x.SwaggerEndpoint("v1/swagger.json", "QuickMock API V1"); });
+
             app.Run();
         }
     }
