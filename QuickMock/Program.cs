@@ -21,7 +21,7 @@ namespace QuickMock
                 x.SwaggerDoc("v1", new OpenApiInfo { Title = "QuickMock API", Version = "v1" });
             });
 
-            builder.Services.AddCore(builder.Configuration);
+            builder.Services.AddCore();
             builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(nameof(AppOptions)));
             var app = builder.Build();
 
@@ -35,6 +35,7 @@ namespace QuickMock
             app.UseStaticFiles();
             app.UseRouting();
 
+            app.MapStaticAssets();
             app.MapControllers();
             app.MapSwagger();
             app.UseSwaggerUI(x => { x.SwaggerEndpoint("v1/swagger.json", "QuickMock API V1"); });

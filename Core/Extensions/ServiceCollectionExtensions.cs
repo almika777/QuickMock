@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCore(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddCore(this IServiceCollection services)
         {
             services.AddServices();
             return services;
@@ -13,7 +13,7 @@ namespace Core.Extensions
         
         private static IServiceCollection AddServices(this IServiceCollection services)
         {
-
+            services.AddSingleton<IRequestProviderService, RequestProviderCacheService>();
             return services;
         }
 
