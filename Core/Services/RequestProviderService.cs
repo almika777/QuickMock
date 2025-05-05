@@ -8,11 +8,7 @@ public class RequestProviderService(IRequestProviderService requestProvider) : I
     {
         await requestProvider.AddRequest(request);
     }
-    
-    public async Task<string> GetRequestValue(string path)
-    {
-        return await requestProvider.GetRequestValue(path);
-    }
+
 }
 
 public interface IRequestService

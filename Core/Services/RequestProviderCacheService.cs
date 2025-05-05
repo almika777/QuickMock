@@ -7,23 +7,32 @@ public class RequestProviderCacheService : IRequestProviderService
 {
     private readonly IDictionary<string, string> _cache = new Dictionary<string, string>();
 
-    public Task<string> AddRequest(RequestAddRequest request)
+    public Task AddRequest(RequestAddRequest request)
     {
-        if (_cache.ContainsKey(GetKey(request.Path)))
-            throw new HandledCustomException($"'{request.Path}' already exists. Remove older, or rewrite it.");
+        var key = GetKey(request.Path, request.IgnoreQueryString);
 
-        _cache.Add(request.Path, request.Value);
+        if (_cache.ContainsKey(key))
+            throw new HandledCustomException($"'{key}' already exists. Remove older, or rewrite it.");
+        
+        _cache.Add(key, request.Value);
 
-        return Task.FromResult(GetKey(request.Path));
+        return Task.FromResult(key);
     }
 
-    public Task<string> GetRequestValue(string path)
+    public Task<string> GetRequestValue(RequestGetRequest request)
     {
-        if (_cache.TryGetValue(GetKey(path), out var result))
+        var key = GetKey(request.Path, request.IgnoreQueryString);
+
+        if (_cache.TryGetValue(key, out var result))
             return Task.FromResult(result);
 
-        throw new HandledCustomException($"'{path}' doesn't exists. Please add folder, or check path.");
+        throw new HandledCustomException($"'{request.Path}' doesn't exists. Please add folder, or check path.");
     }
 
-    private string GetKey(string path) => path;
+    private string GetKey(string path, bool ignoreQuery)
+    {
+        return ignoreQuery
+            ? path.Split("?")[0]
+            : path;
+    }
 }
