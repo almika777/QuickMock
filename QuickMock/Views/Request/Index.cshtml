@@ -15,7 +15,7 @@
                     Requests
                 </button>
             </li>
-            <li class="nav-item" role="presentation">
+            <li  class="nav-item" role="presentation">
                 <button class="nav-link"
                         id='@nameof(RequestController.RequestAddTab)'
                         data-bs-toggle="tab"
@@ -45,5 +45,9 @@
             .then(html => {
                 document.getElementById('tab-content-area').innerHTML = html;
             });
+    }
+
+    function clickAddRequestTab() {
+        document.getElementById("RequestAddTab").click()
     }
 </script>

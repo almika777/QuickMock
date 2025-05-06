@@ -2,12 +2,24 @@
 
 <div class="col">
     <div class="list-group">
-        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">The current link
-            item</a>
-
-        @foreach (var request in Model.Requests)
-        {
-            <a href="#" class="list-group-item list-group-item-action">@request</a>
+        <!-- <a href="#" class="list-group-item list-group-item-action active" aria-current="true">The current link item</a> -->
+        @{
+            if (Model.Requests.Count > 0)
+            {
+                @foreach (var request in Model.Requests)
+                {
+                    <a href="#" class="list-group-item list-group-item-action">@request</a>
+                }
+            }
+            else
+            {
+                <p>
+                    At the moment, you have not created any requests.
+                    <button type="button" class="btn btn-primary" onclick="clickAddRequestTab()">Please create one</button>
+                </p>
+            }
         }
+        
     </div>
 </div>
+
