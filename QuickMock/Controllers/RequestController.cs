@@ -2,25 +2,47 @@ using Core.Requests;
 using Core.Services;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using QuickMock.Requests;
+using QuickMock.Models.Request;
 
 namespace QuickMock.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class RequestController(IRequestProviderService requestService) : Controller
+    public class RequestController : Controller
     {
+        private readonly IRequestProviderService _requestService;
+        public RequestController(IRequestProviderService requestService)
+        {
+            _requestService = requestService;
+        }
+        
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View("Index");
         }
         
-        [HttpPost]
-        public async Task<IActionResult> Add(AddRequest request)
+        [HttpGet("[action]")]
+        public async Task<IActionResult> RequestsTab()
         {
-            await requestService.AddRequest(request.Adapt<RequestAddRequest>());
-            return Ok();
+            var model = new RequestIndexModel
+            {
+                Requests = await _requestService.GetRequests()
+            };
+            return PartialView("RequestsTab", model);
+        }        
+        
+        [HttpGet("[action]")]
+        public IActionResult RequestAddTab()
+        {
+            return PartialView("RequestAddTab", new RequestAddModel());
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> Add([FromForm]RequestAddModel request)
+        {
+            await _requestService.AddRequest(request.Adapt<RequestAddRequest>());
+            return Index();
         }
     }
 }

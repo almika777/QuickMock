@@ -1,24 +1,49 @@
-﻿@page
-@model QuickMock.Views.Request.Index
-
+﻿@using QuickMock.Controllers
 @{
     Layout = "_Layout";
 }
 
-<!DOCTYPE html>
+<div class="container my-3">
+    <div class="row">
+        <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active"
+                        id='@nameof(RequestController.RequestsTab)'
+                        data-bs-toggle="tab"
+                        type="button"
+                        onclick="loadTab('@nameof(RequestController.RequestsTab)')">
+                    Requests
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link"
+                        id='@nameof(RequestController.RequestAddTab)'
+                        data-bs-toggle="tab"
+                        type="button"
+                        onclick="loadTab('@nameof(RequestController.RequestAddTab)')">
+                    New request
+                </button>
+            </li>
+        </ul>
 
-<html lang="ru">
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    <section class="section">
-        <div class="container">
-            <h1 class="title">Hello, Bulma!</h1>
-            <button class="button is-primary">Кнопка</button>
+        <div id="tab-content-area">
+            <!-- Здесь будет подгружаться частичный контент -->
         </div>
-    </section>
+
+    </div>
+
 </div>
-</body>
-</html>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        loadTab('@nameof(RequestController.RequestsTab)');
+    });
+    
+    function loadTab(methodName) {
+        fetch(`/Request/${methodName}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('tab-content-area').innerHTML = html;
+            });
+    }
+</script>

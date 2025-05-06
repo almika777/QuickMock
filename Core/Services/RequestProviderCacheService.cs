@@ -29,6 +29,11 @@ public class RequestProviderCacheService : IRequestProviderService
         throw new HandledCustomException($"'{request.Path}' doesn't exists. Please add folder, or check path.");
     }
 
+    public Task<List<string>> GetRequests()
+    {
+        return Task.FromResult(_cache.Keys.ToList());
+    }
+
     private string GetKey(string path, bool ignoreQuery)
     {
         return ignoreQuery

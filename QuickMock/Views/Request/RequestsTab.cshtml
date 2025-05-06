@@ -1,0 +1,13 @@
+﻿@model QuickMock.Models.Request.RequestIndexModel
+
+<div class="col">
+    <div class="list-group">
+        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">The current link
+            item</a>
+
+        @foreach (var request in Model.Requests)
+        {
+            <a href="#" class="list-group-item list-group-item-action">@request</a>
+        }
+    </div>
+</div>
