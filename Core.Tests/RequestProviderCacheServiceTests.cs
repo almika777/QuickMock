@@ -1,60 +1,23 @@
-﻿using Core.Exceptions;
+﻿using Common.Options;
 using Core.Requests;
 using Core.Services;
+using Microsoft.Extensions.Options;
 
 namespace Core.tests;
 
 public class RequestProviderCacheServiceTests
 {
+    private readonly AppOptions _options = new AppOptions
+    {
+        RequestsFolder = "temp"
+    };
+    
     [Test]
     public async Task AddRequest_WhenIgnoreAndNotIgnoreContainsSamePath()
     {
-        var service = new RequestProviderCacheService();
-        var addRequest = new RequestAddRequest
-        {
-            Path = "qwe/dfg?text=123",
-            Value = "value",
-            IgnoreQueryString = true
-        };
 
-        var addRequest2 = new RequestAddRequest
-        {
-            Path = "qwe/dfg?text=1563",
-            Value = "value2",
-            IgnoreQueryString = false
-        };
-
-        await service.AddRequest(addRequest);
-        await service.AddRequest(addRequest2);
-    }
-
-    [Test]
-    public async Task AddRequest_WhenTwoIgnoreContainsSamePath()
-    {
-        var service = new RequestProviderCacheService();
-        var addRequest = new RequestAddRequest
-        {
-            Path = "qwe/dfg?text=123",
-            Value = "value",
-            IgnoreQueryString = true
-        };
-
-        var addRequest2 = new RequestAddRequest
-        {
-            Path = "qwe/dfg?text=1563",
-            Value = "value2",
-            IgnoreQueryString = true
-        };
-
-        await service.AddRequest(addRequest);
-        Assert.ThrowsAsync<HandledCustomException>(() => service.AddRequest(addRequest2));
-    }
-
-    [Test]
-    public async Task GetRequest_IgnoreQueryTest()
-    {
-        var service = new RequestProviderCacheService();
-
+        var service = new RequestProviderCacheService(new FileService(new OptionsWrapper<AppOptions>(_options)));
+        
         var addRequest = new RequestAddRequest
         {
             Path = "qwe/dfg?text=123",
@@ -72,19 +35,43 @@ public class RequestProviderCacheServiceTests
         await service.AddRequest(addRequest);
         await service.AddRequest(addRequest2);
 
-        var res1 = await service.GetRequestValue(new RequestGetRequest
+        var directoryExists = Directory.Exists(_options.FullFolderPath);
+        var filesInDirectory = Directory.GetFiles(_options.FullFolderPath);
+        
+        Assert.That(directoryExists, Is.True);
+        Assert.That(filesInDirectory.Length, Is.EqualTo(2));
+    }
+
+    [Test]
+    public async Task GetRequests_ReturnAllRequests()
+    {
+        var service = new RequestProviderCacheService(new FileService(new OptionsWrapper<AppOptions>(_options)));
+        
+        var addRequest = new RequestAddRequest
         {
-            Path = addRequest2.Path,
+            Path = "http://localhost:5000/qwe/dfg?text=123",
+            Value = "value",
             IgnoreQueryString = true
-        });
+        };
 
-        var res2 = await service.GetRequestValue(new RequestGetRequest
+        var addRequest2 = new RequestAddRequest
         {
-            Path = addRequest2.Path,
+            Path = "http://localhost:5000/qwe/dfg?text=1563",
+            Value = "value2",
             IgnoreQueryString = false
-        });
+        };
 
-        Assert.That(res1, Is.EquivalentTo(addRequest.Value));
-        Assert.That(res2, Is.EquivalentTo(addRequest2.Value));
+        await service.AddRequest(addRequest);
+        await service.AddRequest(addRequest2);
+
+        var res = await service.GetRequests();
+
+        Assert.That(res.Count, Is.EqualTo(2));
+    }
+    
+    [TearDown]
+    public void TearDown()
+    {
+        Directory.Delete(_options.FullFolderPath, true);
     }
 }

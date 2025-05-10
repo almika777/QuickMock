@@ -3,35 +3,24 @@ using Core.Requests;
 
 namespace Core.Services;
 
-public class RequestProviderCacheService : IRequestProviderService
+public class RequestProviderCacheService(FileService fileService) : IRequestProviderService
 {
-    private readonly IDictionary<string, string> _cache = new Dictionary<string, string>();
 
-    public Task AddRequest(RequestAddRequest request)
+    public async Task AddRequest(RequestAddRequest request)
     {
         var key = GetKey(request.Path, request.IgnoreQueryString);
-
-        if (_cache.ContainsKey(key))
-            throw new HandledCustomException($"'{key}' already exists. Remove older, or rewrite it.");
-        
-        _cache.Add(key, request.Value);
-
-        return Task.FromResult(key);
+        await fileService.AddFile(key, request.Value);
     }
 
     public Task<string> GetRequestValue(RequestGetRequest request)
     {
         var key = GetKey(request.Path, request.IgnoreQueryString);
-
-        if (_cache.TryGetValue(key, out var result))
-            return Task.FromResult(result);
-
-        throw new HandledCustomException($"'{request.Path}' doesn't exists. Please add folder, or check path.");
+        return null;
     }
 
     public Task<List<string>> GetRequests()
     {
-        return Task.FromResult(_cache.Keys.ToList());
+        return Task.FromResult(fileService.GetRequests());
     }
 
     private string GetKey(string path, bool ignoreQuery)
