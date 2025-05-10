@@ -5,17 +5,16 @@ namespace Core.Services;
 
 public class RequestProviderCacheService(FileService fileService) : IRequestProviderService
 {
-
     public async Task AddRequest(RequestAddRequest request)
     {
         var key = GetKey(request.Path, request.IgnoreQueryString);
         await fileService.AddFile(key, request.Value);
     }
 
-    public Task<string> GetRequestValue(RequestGetRequest request)
+    public async Task<string?> GetRequestValue(string path)
     {
-        var key = GetKey(request.Path, request.IgnoreQueryString);
-        return null;
+        var res = await fileService.GetRequestValue(GetKey(path, false));
+        return res ?? await fileService.GetRequestValue(GetKey(path, true));
     }
 
     public Task<List<string>> GetRequests()

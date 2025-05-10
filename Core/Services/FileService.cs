@@ -1,5 +1,5 @@
-﻿using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.IO.Compression;
+using System.Text;
 using Common.Options;
 using Microsoft.Extensions.Options;
 
@@ -9,15 +9,32 @@ public class FileService(IOptions<AppOptions> options)
 {
     public async Task AddFile(string path, string value)
     {
-        var pathToSave = GetBase64Path(path);
+        var pathWithFileName = Path.Combine(
+            options.Value.FullFolderPath,
+            $"{EncodePath(path)}.txt");
 
-        await File.WriteAllTextAsync(pathToSave, value);
+        var directory = Path.GetDirectoryName(pathWithFileName);
+
+        if (!Directory.Exists(directory))
+            Directory.CreateDirectory(directory!);
+
+        await File.WriteAllTextAsync(pathWithFileName, value);
     }
 
-    public async Task<string> GetRequestValue(string path)
+    public async Task<string?> GetRequestValue(string path)
     {
-        var pathToRead = GetBase64Path(path);
-        return await File.ReadAllTextAsync(pathToRead);
+        var pathToRead = Path.Combine(
+            options.Value.FullFolderPath,
+            $"{EncodePath(path)}.txt");
+        try
+        {
+            return await File.ReadAllTextAsync(pathToRead);
+        }
+        // ReSharper disable once RedundantCatchClause
+        catch (FileNotFoundException)
+        {
+            return null;
+        }
     }
 
     public List<string> GetRequests()
@@ -26,23 +43,31 @@ public class FileService(IOptions<AppOptions> options)
         return fileNames.Select(GetFileName).ToList();
     }
 
-    private static string GetFileName(string x)
+    private string GetFileName(string x)
     {
-        return Uri.UnescapeDataString(Path.GetFileNameWithoutExtension(x));
+        return DecodePath(Path.GetFileNameWithoutExtension(x));
     }
 
-    private string GetBase64Path(string path)
+    private string EncodePath(string path)
     {
-        var pathWithFileName = Path.Combine(
-            options.Value.FullFolderPath,
-            $"{Uri.EscapeDataString(path)}.txt");
+        var raw = Encoding.UTF8.GetBytes(path);
+        using var outputStream = new MemoryStream();
+        using (var gzip = new GZipStream(outputStream, CompressionLevel.Optimal))
+        {
+            gzip.Write(raw, 0, raw.Length);
+        }
 
-        var directory = Path.GetDirectoryName(pathWithFileName);
-
-        if (!Directory.Exists(directory))
-            Directory.CreateDirectory(directory!);
-
-        return pathWithFileName;
+        return Convert.ToBase64String(outputStream.ToArray()).Replace('+', '-').Replace('/', '_');
     }
-    
+
+    private string DecodePath(string filename)
+    {
+        var decodedBase64 = filename.Replace('-', '+').Replace('_', '/');
+        var compressed = Convert.FromBase64String(decodedBase64);
+        using var inputStream = new MemoryStream(compressed);
+        using var gzip = new GZipStream(inputStream, CompressionMode.Decompress);
+        using var resultStream = new MemoryStream();
+        gzip.CopyTo(resultStream);
+        return Encoding.UTF8.GetString(resultStream.ToArray());
+    }
 }
