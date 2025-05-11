@@ -1,25 +1,25 @@
 ﻿using Common.Options;
-using Core.Requests;
+using Core.Models;
 using Core.Services;
 using Microsoft.Extensions.Options;
 
 namespace Core.tests;
 
-public class RequestProviderCacheServiceTests
+public class RequestProviderServiceTests
 {
     private readonly AppOptions _options = new AppOptions
     {
         RequestsFolder = "temp"
     };
 
-    private readonly RequestAddRequest _addRequest = new()
+    private readonly RequestModel _addRequest = new()
     {
         Path = "http://localhost:5000/qwe/dfg?text=123",
         Value = "value",
         IgnoreQueryString = true
     };
 
-    private readonly RequestAddRequest _addRequest2 = new()
+    private readonly RequestModel _addRequest2 = new()
     {
         Path = "http://localhost:5000/qwe/dfg?text=123",
         Value = "value2",
@@ -29,7 +29,7 @@ public class RequestProviderCacheServiceTests
     [Test]
     public async Task AddRequest_WhenIgnoreAndNotIgnoreContainsSamePath()
     {
-        var service = new RequestProviderCacheService(new FileService(new OptionsWrapper<AppOptions>(_options)));
+        var service = new RequestProviderService(new FileService(new OptionsWrapper<AppOptions>(_options)));
 
         await AddTwoRequests(service);
 
@@ -43,7 +43,7 @@ public class RequestProviderCacheServiceTests
     [Test]
     public async Task GetRequests_ReturnAllRequests()
     {
-        var service = new RequestProviderCacheService(new FileService(new OptionsWrapper<AppOptions>(_options)));
+        var service = new RequestProviderService(new FileService(new OptionsWrapper<AppOptions>(_options)));
 
         await AddTwoRequests(service);
 
@@ -56,7 +56,7 @@ public class RequestProviderCacheServiceTests
     [Test]
     public async Task GetRequestValue_ReturnCorrectValue()
     {
-        var service = new RequestProviderCacheService(new FileService(new OptionsWrapper<AppOptions>(_options)));
+        var service = new RequestProviderService(new FileService(new OptionsWrapper<AppOptions>(_options)));
 
         await AddTwoRequests(service);
 
@@ -68,7 +68,7 @@ public class RequestProviderCacheServiceTests
         //Мы ищем изначально по полному пути, если не нашли, ищем по базовому
     }
 
-    private async Task AddTwoRequests(RequestProviderCacheService service)
+    private async Task AddTwoRequests(RequestProviderService service)
     {
         await service.AddRequest(_addRequest);
         await service.AddRequest(_addRequest2);

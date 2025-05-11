@@ -9,9 +9,7 @@ public class FileService(IOptions<AppOptions> options)
 {
     public async Task AddFile(string path, string value)
     {
-        var pathWithFileName = Path.Combine(
-            options.Value.FullFolderPath,
-            $"{EncodePath(path)}.txt");
+        var pathWithFileName = PathWithFileName(path);
 
         var directory = Path.GetDirectoryName(pathWithFileName);
 
@@ -19,6 +17,18 @@ public class FileService(IOptions<AppOptions> options)
             Directory.CreateDirectory(directory!);
 
         await File.WriteAllTextAsync(pathWithFileName, value);
+    }
+
+    public async Task EditFile(string path, string value)
+    {
+        var pathWithFileName = PathWithFileName(path);
+        await File.WriteAllTextAsync(pathWithFileName, value);
+    }
+
+    public async Task DeleteFile(string path)
+    {
+        var pathWithFileName = PathWithFileName(path);
+        File.Delete(pathWithFileName);
     }
 
     public async Task<string?> GetRequestValue(string path)
@@ -41,6 +51,13 @@ public class FileService(IOptions<AppOptions> options)
     {
         var fileNames = Directory.GetFiles(options.Value.FullFolderPath);
         return fileNames.Select(GetFileName).ToList();
+    }
+
+    private string PathWithFileName(string path)
+    {
+        return Path.Combine(
+            options.Value.FullFolderPath,
+            $"{EncodePath(path)}.txt");
     }
 
     private string GetFileName(string x)

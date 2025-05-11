@@ -15,7 +15,7 @@
                     Requests
                 </button>
             </li>
-            <li  class="nav-item" role="presentation">
+            <li class="nav-item" role="presentation">
                 <button class="nav-link"
                         id='@nameof(RequestController.RequestAddTab)'
                         data-bs-toggle="tab"
@@ -34,20 +34,67 @@
 
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        loadTab('@nameof(RequestController.RequestsTab)');
-    });
-    
-    function loadTab(methodName) {
-        fetch(`/Request/${methodName}`)
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('tab-content-area').innerHTML = html;
-            });
-    }
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadTab('@nameof(RequestController.RequestsTab)');
+        });
 
-    function clickAddRequestTab() {
-        document.getElementById("RequestAddTab").click()
-    }
-</script>
+        function clickAddRequestTab() {
+            document.getElementById("RequestAddTab").click()
+        }
+
+        function loadTab(methodName) {
+            fetch(`/Request/${methodName}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('tab-content-area').innerHTML = html;
+                });
+        }
+
+        function loadRequest(path) {
+            fetch(`/Request/RequestValue?path=${encodeURIComponent(path)}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('request-value-area').innerHTML = html;
+                });
+        }
+
+        function searchRequests() {
+            const input = document.getElementById('searchInput');
+
+            const filter = input.value.toLowerCase();
+            const items = document.querySelectorAll('#requestListContainer a');
+
+            items.forEach(item => {
+                const text = item.textContent || item.innerText;
+
+                if (text.toLowerCase().includes(filter)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function showDeleteModal() {
+            const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+            modal.show();
+        }
+
+        function deleteRequest(url) {
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert(response.text());
+                }
+            });
+        }
+    </script>
+}

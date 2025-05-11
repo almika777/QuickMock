@@ -14,7 +14,7 @@ namespace Core.Extensions
         private static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddSingleton<FileService>();
-            services.AddSingleton<IRequestProviderService, RequestProviderCacheService>();
+            services.AddSingleton<IRequestProviderService, RequestProviderService>();
             return services;
         }
 

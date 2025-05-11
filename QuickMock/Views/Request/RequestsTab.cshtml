@@ -1,25 +1,32 @@
 ﻿@model QuickMock.Models.Request.RequestIndexModel
 
-<div class="col">
-    <div class="list-group">
-        <!-- <a href="#" class="list-group-item list-group-item-action active" aria-current="true">The current link item</a> -->
-        @{
-            if (Model.Requests.Count > 0)
-            {
-                @foreach (var request in Model.Requests)
+<div class="row">
+    <div class="col-4">
+        <input type="text" oninput="searchRequests()" id="searchInput" class="form-control mb-3" placeholder="Search for a query...">
+        <div class="list-group" id="requestListContainer">
+            @{
+                if (Model.Requests.Count > 0)
                 {
-                    <a href="#" class="list-group-item list-group-item-action">@request</a>
+                    @foreach (var request in Model.Requests)
+                    {
+                        <a href="#" onclick="loadRequest('@request')"
+                           class="list-group-item list-group-item-action text-truncate">@request</a>
+                    }
+                }
+                else
+                {
+                    <p>
+                        At the moment, you have not created any requests.
+                        <button type="button" class="btn btn-primary" onclick="clickAddRequestTab()">Please create one
+                        </button>
+                    </p>
                 }
             }
-            else
-            {
-                <p>
-                    At the moment, you have not created any requests.
-                    <button type="button" class="btn btn-primary" onclick="clickAddRequestTab()">Please create one</button>
-                </p>
-            }
-        }
-        
+        </div>
+    </div>
+    <div class="col-8">
+        <div id="request-value-area">
+            <!-- Здесь будет подгружаться частичный контент -->
+        </div>
     </div>
 </div>
-
