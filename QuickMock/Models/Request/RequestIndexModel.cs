@@ -2,5 +2,5 @@
 
 public class RequestIndexModel
 {
-    public List<string> Requests { get; set; }
+    public string Host { get; set; }
 }

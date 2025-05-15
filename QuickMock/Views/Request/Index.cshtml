@@ -1,43 +1,13 @@
 ﻿@using QuickMock.Controllers
+
 @{
     Layout = "_Layout";
 }
 
-<div class="container my-3">
-    <div class="row">
-        <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active"
-                        id='@nameof(RequestController.RequestsTab)'
-                        data-bs-toggle="tab"
-                        type="button"
-                        onclick="loadTab('@nameof(RequestController.RequestsTab)')">
-                    Requests
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link"
-                        id='@nameof(RequestController.RequestAddTab)'
-                        data-bs-toggle="tab"
-                        type="button"
-                        onclick="loadTab('@nameof(RequestController.RequestAddTab)')">
-                    New request
-                </button>
-            </li>
-        </ul>
-
-        <div id="tab-content-area">
-            <!-- Здесь будет подгружаться частичный контент -->
-        </div>
-
-    </div>
-
-</div>
-
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            loadTab('@nameof(RequestController.RequestsTab)');
+            loadTab('@nameof(RequestController.Requests)');
         });
 
         function clickAddRequestTab() {

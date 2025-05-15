@@ -2,7 +2,6 @@
 
 public class RequestModel
 {
-    public string Path { get; set; }
+    public string Url { get; set; }
     public string? Value { get; set; }
-    public bool IgnoreQueryString { get; set; }
 }

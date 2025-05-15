@@ -6,7 +6,6 @@ using QuickMock.Models.Request;
 
 namespace QuickMock.Controllers
 {
-    [ApiController]
     [Route("[controller]")]
     public class RequestController : Controller
     {
@@ -24,13 +23,13 @@ namespace QuickMock.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> RequestsTab()
+        public async Task<IActionResult> Requests()
         {
-            var model = new RequestIndexModel
+            var model = new RequestsModel
             {
                 Requests = await _requestService.GetRequests()
             };
-            return PartialView("RequestsTab", model);
+            return View("Requests", model);
         }
 
         [HttpGet("[action]")]
@@ -45,25 +44,28 @@ namespace QuickMock.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult RequestAddTab()
+        public IActionResult RequestAdd()
         {
-            return PartialView("RequestAddTab", new RequestAddModel());
+            return View("RequestAdd", new RequestAddModel());
         }
 
         [HttpPost("[action]")]
         public async Task<IActionResult> Add([FromForm] RequestAddModel request)
         {
+            if (!ModelState.IsValid)
+                return View("RequestAdd", request);
+            
             await _requestService.AddRequest(request.Adapt<RequestModel>());
-            return Index();
-        }        
-        
+            return await Requests();
+        }
+
         [HttpPost("[action]")]
         public async Task<IActionResult> Edit([FromForm] RequestEditModel request)
         {
             await _requestService.EditRequest(request.Adapt<RequestModel>());
             return Index();
-        }        
-        
+        }
+
         [HttpDelete("[action]")]
         public async Task<IActionResult> Delete(string path)
         {

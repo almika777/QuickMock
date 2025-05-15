@@ -1,5 +1,8 @@
-﻿@model QuickMock.Models.Request.RequestIndexModel
-
+﻿@model QuickMock.Models.Request.RequestsModel
+@{
+    ViewData["Title"] = "Requests";
+    Layout = "_Layout"; // Укажите ваш layout файл
+}
 <div class="row">
     <div class="col-4">
         <input type="text" oninput="searchRequests()" id="searchInput" class="form-control mb-3" placeholder="Search for a query...">

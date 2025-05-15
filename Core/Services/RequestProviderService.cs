@@ -6,34 +6,34 @@ public class RequestProviderService(FileService fileService) : IRequestProviderS
 {
     public async Task AddRequest(RequestModel request)
     {
-        var key = GetKey(request.Path, request.IgnoreQueryString);
+        var key = GetKey(request.Url);
         await fileService.AddFile(key, request.Value);
     }
 
     public async Task<RequestModel> EditRequest(RequestModel request)
     {
-        var key = GetKey(request.Path, request.IgnoreQueryString);
+        var key = GetKey(request.Url);
         await fileService.EditFile(key, request.Value);
         
         return new RequestModel
         {
-            Path = request.Path,
+            Url = request.Url,
             Value = request.Value
         };
     }
 
     public async Task Delete(string path)
     {
-        var key = GetKey(path, false);
+        var key = GetKey(path);
         await fileService.DeleteFile(key);
     }
 
     public async Task<RequestModel> GetRequestValue(string path)
     {
-        var res = await fileService.GetRequestValue(GetKey(path, false));
+        var res = await fileService.GetRequestValue(GetKey(path));
         return new RequestModel
         {
-            Value = res ?? await fileService.GetRequestValue(GetKey(path, true))
+            Value = res
         };
     }
 
@@ -42,11 +42,9 @@ public class RequestProviderService(FileService fileService) : IRequestProviderS
         return Task.FromResult(fileService.GetRequests());
     }
 
-    private string GetKey(string path, bool ignoreQuery)
+    private string GetKey(string path)
     {
-        return ignoreQuery
-            ? path.Split("?")[0]
-            : path;
+        return path;
     }
 }
 

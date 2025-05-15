@@ -14,16 +14,14 @@ public class RequestProviderServiceTests
 
     private readonly RequestModel _addRequest = new()
     {
-        Path = "http://localhost:5000/qwe/dfg?text=123",
+        Url = "http://localhost:5000/qwe/dfg?text=123",
         Value = "value",
-        IgnoreQueryString = true
     };
 
     private readonly RequestModel _addRequest2 = new()
     {
-        Path = "http://localhost:5000/qwe/dfg?text=123",
+        Url = "http://localhost:5000/qwe/dfg?text=1234",
         Value = "value2",
-        IgnoreQueryString = false
     };
 
     [Test]
@@ -51,23 +49,7 @@ public class RequestProviderServiceTests
 
         Assert.That(res.Count, Is.EqualTo(2));
     }
-
-
-    [Test]
-    public async Task GetRequestValue_ReturnCorrectValue()
-    {
-        var service = new RequestProviderService(new FileService(new OptionsWrapper<AppOptions>(_options)));
-
-        await AddTwoRequests(service);
-
-        var res = await service.GetRequestValue(_addRequest.Path);
-
-        Assert.That(res, Is.EqualTo(_addRequest2.Value));
-        //Потому что пути одинаковы, но в 1 реквесте игнорим квери стринг, а пути одинаковы, но во втором ерквесте не игнорим.
-        //Было создано 2 файла с одинаковой базой урла, но в 1 случае игнор квери, а в другйо нет.
-        //Мы ищем изначально по полному пути, если не нашли, ищем по базовому
-    }
-
+    
     private async Task AddTwoRequests(RequestProviderService service)
     {
         await service.AddRequest(_addRequest);

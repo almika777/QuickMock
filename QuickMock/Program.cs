@@ -1,6 +1,10 @@
 using Common.Options;
 using Core.Extensions;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
+using QuickMock.Middlewares;
+using QuickMock.Validators;
 
 namespace QuickMock
 {
@@ -23,6 +27,9 @@ namespace QuickMock
 
             builder.Services.AddCore();
             builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(nameof(AppOptions)));
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddValidatorsFromAssemblyContaining<RequestValidator>();
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -40,6 +47,7 @@ namespace QuickMock
             app.MapSwagger();
             app.UseSwaggerUI(x => { x.SwaggerEndpoint("v1/swagger.json", "QuickMock API V1"); });
 
+            app.UseMiddleware<LayoutDataMiddleware>();
             app.Run();
         }
     }
