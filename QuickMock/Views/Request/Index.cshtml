@@ -1,70 +1,84 @@
-﻿@using QuickMock.Controllers
-
-@{
+﻿@{
     Layout = "_Layout";
+    var urls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS")?.Split(';');
+    var httpUrl = urls.First(x => x.Contains("http"));
+    var httpsUrl = urls.First(x => x.Contains("https"));
 }
+<div class="row mt-5 lh-lg">
+    <p>
+        <mark class="rounded h3">QuickMock</mark>
+        - a simple web server for serving text content. 
+        Often, during frontend development, you need to test how your application handles responses from the server,
+            and <b>QuickMock</b> can easily and quickly solve this task.
+            
+    </p>
+    <p>
+        To do this, simply replace the <code>BASE_URL</code> (the URL of your backend server) in your configuration
+        file with this one and <a href="@Url.Action("RequestAdd", "Request")">create a new endpoint</a>.
+    </p>
+</div>
+<div class="row">
+    <div class="col-6">
+        <p class="h3">Before</p>
+        <pre>
+            <code class="language-javascript">
+        const config = {
+            apiUrl: 'https://api.example.com'
+        };
+            </code>
+        </pre>
+    </div>
+    <div class="col-6">
+        
+        <p class="h3">After</p>
 
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            loadTab('@nameof(RequestController.Requests)');
-        });
+        <pre>
+            <code class="language-javascript">
+        const config = {
+            apiUrl: '@httpUrl'
+        };
+            </code>
+        </pre>
+    </div>
+</div>
+<p>
+    Alternatively, you can create an additional variable in your configuration file.
+</p>
+<hr/>
 
-        function clickAddRequestTab() {
-            document.getElementById("RequestAddTab").click()
+<div class="row">
+    <div class="col-6">
+        <p class="h3">Before</p>
+        <pre>
+            <code class="language-javascript">
+        const config = {
+            apiUrl: 'https://api.example.com'
+        };
+
+        get(endpoint) {
+            const url = `${config.apiUrl}${endpoint}`;
+            return fetch(url);
         }
 
-        function loadTab(methodName) {
-            fetch(`/Request/${methodName}`)
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('tab-content-area').innerHTML = html;
-                });
+            </code>
+        </pre>
+    </div>
+    <div class="col-6">
+        
+        <p class="h3">After</p>
+
+        <pre>
+            <code class="language-javascript">
+        const config = {
+            apiUrl: 'https://api.example.com',
+            mockUrl: '@httpsUrl',
+        };
+
+        get(endpoint) {
+            const url = `${config.mockUrl}${endpoint}`;
+            return fetch(url);
         }
-
-        function loadRequest(path) {
-            fetch(`/Request/RequestValue?path=${encodeURIComponent(path)}`)
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('request-value-area').innerHTML = html;
-                });
-        }
-
-        function searchRequests() {
-            const input = document.getElementById('searchInput');
-
-            const filter = input.value.toLowerCase();
-            const items = document.querySelectorAll('#requestListContainer a');
-
-            items.forEach(item => {
-                const text = item.textContent || item.innerText;
-
-                if (text.toLowerCase().includes(filter)) {
-                    item.style.display = '';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-
-        function showDeleteModal() {
-            const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-            modal.show();
-        }
-
-        function deleteRequest(url) {
-            fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    alert(response.text());
-                }
-            });
-        }
-    </script>
-}
+            </code>
+        </pre>
+    </div>
+</div>
