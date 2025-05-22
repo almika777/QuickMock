@@ -14,11 +14,9 @@ namespace QuickMock
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddSwaggerGen(x =>
             {
@@ -48,6 +46,8 @@ namespace QuickMock
             app.UseSwaggerUI(x => { x.SwaggerEndpoint("v1/swagger.json", "QuickMock API V1"); });
 
             app.UseMiddleware<LayoutDataMiddleware>();
+            app.MapGet("/", () => "QuickMock is alive!");
+            app.Urls.Add("http://*:22789");
             app.Run();
         }
     }

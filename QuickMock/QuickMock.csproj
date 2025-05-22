@@ -10,6 +10,9 @@
 
   <ItemGroup>
     <Content Remove="TestRequests\large_data.json" />
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
