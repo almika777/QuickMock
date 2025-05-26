@@ -6,7 +6,7 @@ using QuickMock.Models.Request;
 
 namespace QuickMock.Controllers
 {
-    [Route("[controller]")]
+    [Route("")]
     public class RequestController : Controller
     {
         private readonly IRequestProviderService _requestService;
@@ -33,12 +33,12 @@ namespace QuickMock.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> RequestValue(string path)
+        public async Task<IActionResult> RequestValue(string url)
         {
-            var requestValueResponse = await _requestService.GetRequestValue(path);
-            return PartialView("RequestValue", new RequestEditModel
+            var requestValueResponse = await _requestService.GetRequestValue(url);
+            return PartialView("_RequestValue", new RequestEditModel
             {
-                Path = path,
+                Url = url,
                 Value = requestValueResponse.Value,
             });
         }
@@ -63,7 +63,7 @@ namespace QuickMock.Controllers
         public async Task<IActionResult> Edit([FromForm] RequestEditModel request)
         {
             await _requestService.EditRequest(request.Adapt<RequestModel>());
-            return Index();
+            return PartialView("_RequestValue", request);
         }
 
         [HttpDelete("[action]")]

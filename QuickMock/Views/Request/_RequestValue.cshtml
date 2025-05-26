@@ -1,0 +1,98 @@
+﻿@model QuickMock.Models.Request.RequestEditModel
+
+@await Html.PartialAsync("_SuccessModalPartial")
+
+@using (Html.BeginForm("Edit", "Request", FormMethod.Post, new { @class = "border p-4 rounded shadow-sm bg-dark", id = "editForm" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-10">
+            <div class="mb-3">
+                <p class="fw-bold text-break">
+                    @Html.HiddenFor(x => x.Url)
+                    @Html.DisplayFor(x => x.Url, new { @class = "form-control ", value = Model.Url })
+                </p>
+            </div>
+        </div>
+        <div class="col-2 text-end">
+            <button type="button" class="btn btn-outline-danger" onclick="showDeleteModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
+                     viewBox="0 0 16 16">
+                    <path
+                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
+                    <path
+                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <hr class="border border-primary border-2 opacity-75">
+
+    <div class="mb-3">
+        @Html.LabelFor(x => x.Value, "Value (JSON or text or some value)", new { @class = "form-label" })
+        @Html.TextAreaFor(x => x.Value, new { @class = "form-control", rows = "10", value = Model.Value })
+    </div>
+
+    <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Edit</button>
+    </div>
+}
+
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmation of deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger"
+                        onclick="deleteRequest('@Url.Action("Delete", "Request", new { path = Model.Url })')">Yes,
+                    delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('editForm')?.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'RequestVerificationToken': form.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            });
+
+            if (response.ok) {
+                // Показываем модальное окно
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+
+                // Удаляем модальное окно через 1 секунду
+                setTimeout(async () => {
+                    successModal.hide();
+
+                    // Обновляем содержимое формы
+                    const formContainer = document.getElementById('editForm');
+                    if (formContainer) {
+                        formContainer.innerHTML = await response.text();
+                    }
+                }, 1500);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+    
+</script>

@@ -36,7 +36,6 @@ namespace QuickMock
                 app.MapOpenApi();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
 
@@ -46,7 +45,6 @@ namespace QuickMock
             app.UseSwaggerUI(x => { x.SwaggerEndpoint("v1/swagger.json", "QuickMock API V1"); });
 
             app.UseMiddleware<LayoutDataMiddleware>();
-            app.MapGet("/", () => "QuickMock is alive!");
             app.Urls.Add("http://*:22789");
             app.Run();
         }

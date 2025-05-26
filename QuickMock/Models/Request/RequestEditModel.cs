@@ -2,7 +2,7 @@
 
 public class RequestEditModel
 {
-    public string Path { get; set; }
+    public string Url { get; set; }
     public string? Value { get; set; }
     
 }

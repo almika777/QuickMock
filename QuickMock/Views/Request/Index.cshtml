@@ -1,8 +1,6 @@
 ﻿@{
     Layout = "_Layout";
-    var urls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS")?.Split(';');
-    var httpUrl = urls.First(x => x.Contains("http"));
-    var httpsUrl = urls.First(x => x.Contains("https"));
+    var url = Context.Request.Host.Value;
 }
 <div class="row mt-5 lh-lg">
     <p>
@@ -35,7 +33,7 @@
         <pre>
             <code class="language-javascript">
         const config = {
-            apiUrl: '@httpUrl'
+            apiUrl: '@url'
         };
             </code>
         </pre>
@@ -71,7 +69,7 @@
             <code class="language-javascript">
         const config = {
             apiUrl: 'https://api.example.com',
-            mockUrl: '@httpsUrl',
+            mockUrl: '@url',
         };
 
         get(endpoint) {

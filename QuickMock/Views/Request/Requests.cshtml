@@ -20,7 +20,7 @@
                         {
                             <a href="#"
                                class="list-group-item list-group-item-action text-truncate"
-                               hx-get="@Url.Action("RequestValue", "Request", new { path = request })"
+                               hx-get="@Url.Action("RequestValue", "Request", new { url = request })"
                                hx-target="#request-value-area">
                                 @request
                             </a>
