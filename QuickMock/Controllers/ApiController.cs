@@ -12,7 +12,7 @@ namespace QuickMock.Controllers
         {
             var request = await requestProvider.GetRequestValue(path);
             return request.Value != null
-                ? Ok(requestProvider)
+                ? Ok(request.Value)
                 : BadRequest();
         }
     }

@@ -1,12 +1,14 @@
 ﻿using System.IO.Compression;
 using System.Text;
 using Common.Options;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Core.Services;
 
 public class FileService(IOptions<AppOptions> options)
 {
+    private string FolderPath = options?.Value?.FullFolderPath ?? Environment.CurrentDirectory;
     public async Task AddFile(string path, string value)
     {
         var pathWithFileName = PathWithFileName(path);
@@ -33,9 +35,7 @@ public class FileService(IOptions<AppOptions> options)
 
     public async Task<string?> GetRequestValue(string path)
     {
-        var pathToRead = Path.Combine(
-            options.Value.FullFolderPath,
-            $"{EncodePath(path)}.txt");
+        var pathToRead = PathWithFileName(path);
         try
         {
             return await File.ReadAllTextAsync(pathToRead);
@@ -49,15 +49,13 @@ public class FileService(IOptions<AppOptions> options)
 
     public List<string> GetRequests()
     {
-        var fileNames = Directory.GetFiles(options.Value.FullFolderPath);
+        var fileNames = Directory.GetFiles(FolderPath, "*.txt");
         return fileNames.Select(GetFileName).ToList();
     }
 
     private string PathWithFileName(string path)
     {
-        return Path.Combine(
-            options.Value.FullFolderPath,
-            $"{EncodePath(path)}.txt");
+        return Path.Combine(FolderPath, $"{EncodePath(path)}.txt");
     }
 
     private string GetFileName(string x)

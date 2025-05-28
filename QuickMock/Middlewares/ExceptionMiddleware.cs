@@ -6,16 +6,13 @@ public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionMiddleware> _logger;
-    private readonly IHostEnvironment _env;
 
     public ExceptionMiddleware(
         RequestDelegate next,
-        ILogger<ExceptionMiddleware> logger,
-        IHostEnvironment env)
+        ILogger<ExceptionMiddleware> logger)
     {
         _next = next;
         _logger = logger;
-        _env = env;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -36,14 +33,7 @@ public class ExceptionMiddleware
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-        var response = _env.IsDevelopment()
-            ? new ApiException(
-                context.Response.StatusCode,
-                exception.Message,
-                exception.StackTrace)
-            : new ApiException(
-                context.Response.StatusCode,
-                "Internal Server Error");
+        var response = new ApiException(context.Response.StatusCode, exception.Message, exception.StackTrace);
 
         var options = new JsonSerializerOptions
         {

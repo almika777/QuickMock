@@ -36,6 +36,7 @@ namespace QuickMock
                 app.MapOpenApi();
             }
 
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseStaticFiles();
             app.UseRouting();
 
