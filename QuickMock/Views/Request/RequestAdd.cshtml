@@ -1,0 +1,27 @@
+﻿@using QuickMock.Helpers
+@model QuickMock.Models.Request.RequestAddModel
+@{
+    ViewData["Title"] = "New request";
+    Layout = "_Layout";
+}
+
+@using (Html.BeginForm("Add", "Request", FormMethod.Post, new { @class = "border p-4 rounded shadow-sm bg-dark" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        @Html.LabelFor(x => x.Url, "Url", new { @class = "form-label" })
+        @Html.ValidatedTextBoxFor(x => x.Url, new { placeholder = "example/first" })
+        @Html.ValidationMessageFor(x => x.Url, "", new { @class = "invalid-feedback" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(x => x.Value, "Value (JSON or text or some value)", new { @class = "form-label" })
+        @Html.ValidatedTextAreaFor(x => x.Value, new { @class = "form-control", rows = "10", placeholder = "Enter the data..." })
+        @Html.ValidationMessageFor(x => x.Value, "", new { @class = "invalid-feedback" })
+    </div>
+
+    <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+}

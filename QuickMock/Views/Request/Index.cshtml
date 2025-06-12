@@ -1,0 +1,82 @@
+﻿@{
+    Layout = "_Layout";
+    var url = Context.Request.Host.Value;
+}
+<div class="row mt-5 lh-lg">
+    <p>
+        <mark class="rounded h3">QuickMock</mark>
+        - a simple web server for serving text content. 
+        Often, during frontend development, you need to test how your application handles responses from the server,
+            and <b>QuickMock</b> can easily and quickly solve this task.
+            
+    </p>
+    <p>
+        To do this, simply replace the <code>BASE_URL</code> (the URL of your backend server) in your configuration
+        file with this one and <a href="@Url.Action("RequestAdd", "Request")">create a new endpoint</a>.
+    </p>
+</div>
+<div class="row">
+    <div class="col-6">
+        <p class="h3">Before</p>
+        <pre>
+            <code class="language-javascript">
+        const config = {
+            apiUrl: 'https://api.example.com'
+        };
+            </code>
+        </pre>
+    </div>
+    <div class="col-6">
+        
+        <p class="h3">After</p>
+
+        <pre>
+            <code class="language-javascript">
+        const config = {
+            apiUrl: '@url'
+        };
+            </code>
+        </pre>
+    </div>
+</div>
+<p>
+    Alternatively, you can create an additional variable in your configuration file.
+</p>
+<hr/>
+
+<div class="row">
+    <div class="col-6">
+        <p class="h3">Before</p>
+        <pre>
+            <code class="language-javascript">
+        const config = {
+            apiUrl: 'https://api.example.com'
+        };
+
+        get(endpoint) {
+            const url = `${config.apiUrl}${endpoint}`;
+            return fetch(url);
+        }
+
+            </code>
+        </pre>
+    </div>
+    <div class="col-6">
+        
+        <p class="h3">After</p>
+
+        <pre>
+            <code class="language-javascript">
+        const config = {
+            apiUrl: 'https://api.example.com',
+            mockUrl: '@url',
+        };
+
+        get(endpoint) {
+            const url = `${config.mockUrl}${endpoint}`;
+            return fetch(url);
+        }
+            </code>
+        </pre>
+    </div>
+</div>

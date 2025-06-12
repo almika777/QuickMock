@@ -1,0 +1,96 @@
+﻿@model QuickMock.Models.Request.RequestsModel
+@{
+    ViewData["Title"] = "Requests";
+    
+     Layout = "_Layout"; // Укажите ваш layout файл
+}
+<div class="row my-3">
+    <div class="col-4">
+        <input type="text" oninput="searchRequests()"
+               id="searchInput"
+               class="form-control mb-3"
+               placeholder="Search for a query...">
+
+        <div class="overflow-y-auto" style="max-height: 60vh;">
+            <div class="list-group" id="requestListContainer" >
+                @{
+                    if (Model.Requests.Count > 0)
+                    {
+                        @foreach (var request in Model.Requests)
+                        {
+                            <a href="#"
+                               class="list-group-item list-group-item-action text-truncate"
+                               hx-get="@Url.Action("RequestValue", "Request", new { url = request })"
+                               hx-target="#request-value-area">
+                                @request
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text">
+                            At the moment, you have not created any requests.
+                            <a type="button" class="btn btn-primary" href="@Url.Action("RequestAdd", "Request")">Please create one</a>
+                        </div>
+                    }
+                }
+            </div>
+
+        </div>
+
+    </div>
+    <div class="col-8">
+        <div id="request-value-area">
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        function searchRequests() {
+            const input = document.getElementById('searchInput');
+
+            const filter = input.value.toLowerCase();
+            const items = document.querySelectorAll('#requestListContainer a');
+
+            items.forEach(item => {
+                const text = item.textContent || item.innerText;
+
+                if (text.toLowerCase().includes(filter)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function loadRequest(path) {
+            fetch(`/Request/RequestValue?path=${encodeURIComponent(path)}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('request-value-area').innerHTML = html;
+                });
+        }
+
+        function showDeleteModal() {
+            const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+            modal.show();
+        }
+
+        function deleteRequest(url) {
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert(response.text());
+                }
+            });
+        }
+    </script>
+}
