@@ -1,5 +1,4 @@
-
-![image](https://github.com/user-attachments/assets/4b97a2c3-9bef-4069-9f89-31e9463ce3ee)
+QuickMock - a simple web server for serving text content. Often, during frontend development, you need to test how your application handles responses from the server, and QuickMock can easily and quickly solve this task.
 
 Run as .Net application:
 - cd QuickMock
